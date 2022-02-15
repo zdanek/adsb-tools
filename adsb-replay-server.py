@@ -45,15 +45,17 @@ def WaitForConnection():
 
 
 def Analyze(row):
+    current_time = datetime.now().strftime("%H:%M:%S.%f")
+
     msgType = int(row[1])
     icao = row[4]
     if msgType in [1, 5, 6]:
         callsing = row[10]
         if callsing:
             if icao not in icaoToCallsign.keys():
-                print("Callsign " + icao + " -> " + callsing)
+                print(current_time + " Callsign " + icao + " -> " + callsing)
             else:
-                print("Callsign: " + callsing)
+                print(current_time + " Callsign: " + callsing)
 
             icaoToCallsign[icao] = callsing
 
@@ -70,7 +72,7 @@ def Analyze(row):
         else:
             callsing = icaoToCallsign.get(icao)
 
-        print("Pos (" + callsing + ") " + lat + " " + lon + " alt: " + alt)
+        print(current_time + " Pos (" + callsing + ") " + lat + " " + lon + " alt: " + alt)
 
 
 def FeedData():
@@ -116,6 +118,7 @@ def FeedData():
 
             if not fakeConnect:
                 conn.send((','.join(row) + "\n").encode('utf-8'))
+
             ttime.sleep(deltaSecs)
 
     print("Processing done")
